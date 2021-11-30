@@ -17,6 +17,7 @@ public class PushBack : MonoBehaviour
             GetComponent<AdvancedWalkerController>().groundFriction = 0.01f;
             GetComponent<AdvancedWalkerController>().AddMomentum(pushDirection * 5f * force);
             GetComponent<TuxAnimations>().playBump();
+            GetComponent<SoundManager>().PlayMusic(2);
         }
 
         else if (other.gameObject.tag == "Tramp")
@@ -27,6 +28,7 @@ public class PushBack : MonoBehaviour
             GetComponent<AdvancedWalkerController>().groundFriction = 0.01f;
             GetComponent<AdvancedWalkerController>().AddMomentum(new Vector3(0, 2, 0) * 5f * force);
             GetComponent<TuxAnimations>().playBump();
+            GetComponent<SoundManager>().PlayMusic(2);
         }
 
         // else if (other.gameObject.tag == "Pipe")

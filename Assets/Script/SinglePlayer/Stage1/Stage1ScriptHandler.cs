@@ -36,6 +36,7 @@ public class Stage1ScriptHandler : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI ultiSkillBtnText;
     [SerializeField] Button ultiSkillButton;
+    [SerializeField] S1SoundManager sound;
 
 
 
@@ -52,6 +53,7 @@ public class Stage1ScriptHandler : MonoBehaviour
 
         //FOR TESTING SCRIPT
         Player = Instantiate(Player, spawnPoint.transform);
+        // sound.PlayMusic(0);
 
 
         isDead = false;
@@ -161,6 +163,7 @@ public class Stage1ScriptHandler : MonoBehaviour
                 //Start the timer to solve the given~
                 StartCoroutine(InitializeSolveTimer());
             }
+            sound.PlayMusic(1);
             int newInt = int.Parse(TimerText.GetComponent<TextMeshProUGUI>().text) - 1;
             TimerText.GetComponent<TextMeshProUGUI>().text = newInt.ToString();
             yield return new WaitForSeconds(1f);
@@ -198,6 +201,7 @@ public class Stage1ScriptHandler : MonoBehaviour
                 StartCoroutine(ResetGameTimer());
                 StopCoroutine(InitializeSolveTimer());
             }
+            sound.PlayMusic(3);
             int newInt = int.Parse(SolveTimer.GetComponent<TextMeshProUGUI>().text) - 1;
             SolveTimer.GetComponent<TextMeshProUGUI>().text = newInt.ToString();
             yield return new WaitForSeconds(1f);
@@ -208,7 +212,11 @@ public class Stage1ScriptHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         if (!isDead)
+        {
             addPoints();
+            sound.PlayMusic(0);
+        }
+
 
         isDead = false;
     }
@@ -298,10 +306,11 @@ public class Stage1ScriptHandler : MonoBehaviour
 
     void addPlayerExp()
     {
-        GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerCurrentExp += 2 * points;
-        GameObject.Find("Opening_Game_Script").GetComponent<PlayerExpCalculator>().UpdatePlayerLevel();
-        GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerMoney += points * 5;
-        SaveData.SaveDataProgress(Database.instance);
+        sound.PlayMusic(2);
+        //     GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerCurrentExp += 2 * points;
+        //     GameObject.Find("Opening_Game_Script").GetComponent<PlayerExpCalculator>().UpdatePlayerLevel();
+        //     GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerMoney += points * 5;
+        //     SaveData.SaveDataProgress(Database.instance);
     }
 
     public bool isGameEnded()

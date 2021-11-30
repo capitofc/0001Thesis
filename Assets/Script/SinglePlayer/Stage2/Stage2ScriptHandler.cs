@@ -51,6 +51,7 @@ public class Stage2ScriptHandler : MonoBehaviour
     public bool isFinished;
     public int timeConsumed;
     public int expGained;
+    public S2SoundManager sound;
 
 
 
@@ -92,13 +93,10 @@ public class Stage2ScriptHandler : MonoBehaviour
                 GenerateGiven();
                 //Spawn arithmetic -- spawnArithmetic()
                 spawnArithmetic();
-
-
-
-
             }
             int num = int.Parse(ReadyTimerText.GetComponent<TextMeshProUGUI>().text);
             num--;
+            sound.PlayMusic(1);
             ReadyTimerText.GetComponent<TextMeshProUGUI>().text = num.ToString();
             yield return new WaitForSeconds(1f);
         }
@@ -111,24 +109,26 @@ public class Stage2ScriptHandler : MonoBehaviour
         // CurrentQuestionNumberText.SetActive(true);
         while (int.Parse(GameTimerText.GetComponent<TextMeshProUGUI>().text) > 0)
         {
-            // if (GameTimerText.GetComponent<TextMeshProUGUI>().text.Equals("1"))
-            // {
-            //     StopAllCoroutines();
-            //     GameTimerText.SetActive(false);
-            //     //Check if he finish the game
+            if (GameTimerText.GetComponent<TextMeshProUGUI>().text.Equals("1"))
+            {
+                StopAllCoroutines();
+                GameTimerText.SetActive(false);
+                //Check if he finish the game
 
-            //     //Reset the game
-            // }
+                //Reset the game
+            }
 
             if (isFinished)
             {
                 StopAllCoroutines();
                 print(timeConsumed);
                 print(calculatePoints());
+                sound.PlayMusic(2);
                 addPlayerExp();
             }
             int num = int.Parse(GameTimerText.GetComponent<TextMeshProUGUI>().text);
             num++;
+            sound.PlayMusic(3);
             timeConsumed = num;
             GameTimerText.GetComponent<TextMeshProUGUI>().text = num.ToString();
             yield return new WaitForSeconds(1f);
@@ -280,7 +280,7 @@ public class Stage2ScriptHandler : MonoBehaviour
 
     public void UpdateGivenText(string arithmetic)
     {
-
+        sound.PlayMusic(0);
         string newGiven = "";
         bool isAdded = false;
         char[] given = givenString.ToCharArray();
@@ -317,6 +317,7 @@ public class Stage2ScriptHandler : MonoBehaviour
             //CORRECT
             if (isCorrect)
             {
+                sound.PlayMusic(4);
                 QuestionAnsweredCorrect++;
                 correctAnswers.GetComponent<TextMeshProUGUI>().text = "Correct Answers: " + QuestionAnsweredCorrect + "/3";
                 //IF CurrentQuestionNumber == 3 Congratulate the player
@@ -335,6 +336,7 @@ public class Stage2ScriptHandler : MonoBehaviour
             //NOT CORRECT
             else
             {
+                sound.PlayMusic(5);
                 //Generate another given (Dont forget to clear playerOperator)
                 playerOperator = new List<string>();
                 GenerateGiven();

@@ -48,9 +48,9 @@ namespace CMF
         public override bool IsJumpKeyPressed()
         {
             //uncomment if u want to use keyboard
-            return Input.GetKey(jumpKey);
+            // return Input.GetKey(jumpKey);
             //uncomment if u want to use joystick
-            //return jump;
+            return jump;
         }
 
         IEnumerator resetJump()

@@ -8,7 +8,7 @@ public class FinishLine : MonoBehaviour
     [SerializeField] GameObject endgame;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals("Zilch"))
+        if (other.gameObject.tag.Equals("Zilch") || other.gameObject.tag.Equals("Maze") || other.gameObject.tag.Equals("Trix"))
         {
             if (GameObject.Find("Stage2Handler").GetComponent<Stage2ScriptHandler>().isDone)
             {
