@@ -176,21 +176,21 @@ public class Stage2ScriptHandler : MonoBehaviour
     {
         given = new Dictionary<int, string>
         {
-            { 7, "6 + 6 + (2 + 5)  + 2" }, //"6 + 6 - (2 * 5)  / 2"
-            // { 8, "1 - 2 * (2 * 2) + 1" },
-            // { 20, "5 + 5 - (5 * 5) + 5" },
-            // { 16, "1 * 2 * 3 + (1 * 10)" },
-            // { 6, "8 + 1 - (10 + 5)" },
-            // { 9, "((10 / 2) * (8 / 4) + 5" },
-            // { 2, "1 - 6 + 5 / (2 + 3)" },
-            // { 5, "(9/3) * 3 + 1 - 5" },
-            // { 14, "(21 / 3) + 7 * 1" }
+            { 7, "6 + 6 - (2 * 5)  / 2" }, //"6 + 6 - (2 * 5)  / 2"
+            { 8, "1 - 2 * (2 * 2) + 1" },
+            { 20, "5 + 5 - (5 * 5) + 5" },
+            { 16, "1 * 2 * 3 + (1 * 10)" },
+            { 6, "8 + 1 - (10 + 5)" },
+            { 9, "((10 / 2) * (8 / 4) + 5" },
+            { 2, "1 - 6 + 5 / (2 + 3)" },
+            { 5, "(9/3) * 3 + 1 - 5" },
+            { 14, "(21 / 3) + 7 * 1" }
         };
         int[] keys = { 7, 8, 20, 16, 6, 9, 2, 5, 14 };
-        // int randomRef = Random.Range(0, keys.Length);
-        int randomRef = 0;
-        // KeyTotalAnswer = keys[randomRef];
-        KeyTotalAnswer = keys[0];
+        int randomRef = Random.Range(0, keys.Length);
+        // int randomRef = 0;
+        KeyTotalAnswer = keys[randomRef];
+        // KeyTotalAnswer = keys[0];
         RemoveArithmetic();
     }
 
@@ -200,22 +200,35 @@ public class Stage2ScriptHandler : MonoBehaviour
         givenString = "";
         correctOperator = new List<string>();
         char[] givenToChar = given[KeyTotalAnswer].ToCharArray();
+        bool ranGen = false;
         for (int i = 0; i < givenToChar.Length; i++)
         {
             if (givenToChar[i].Equals('+') || givenToChar[i].Equals('-') || givenToChar[i].Equals('/') || givenToChar[i].Equals('*'))
             {
                 int ran = Random.Range(0, 2);
-                if (ran == 1 && mercy < 2)
+                // if (ran == 1 && mercy < 3)
+                // {
+                //     mercy++;
+                //     givenString += givenToChar[i].ToString();
+                // }
+                // else
+                // {
+                //     correctOperator.Add(givenToChar[i].ToString());
+                //     givenString += "_";
+                // }
+
+                if (ran == 1 && !ranGen)
+                {
+                    correctOperator.Add(givenToChar[i].ToString());
+                    givenString += "_";
+                    ranGen = true;
+                }
+
+                else if (mercy < 3)
                 {
                     mercy++;
                     givenString += givenToChar[i].ToString();
                 }
-                else
-                {
-                    correctOperator.Add(givenToChar[i].ToString());
-                    givenString += "_";
-                }
-
             }
             else
             {
@@ -319,9 +332,9 @@ public class Stage2ScriptHandler : MonoBehaviour
             {
                 sound.PlayMusic(4);
                 QuestionAnsweredCorrect++;
-                correctAnswers.GetComponent<TextMeshProUGUI>().text = "Correct Answers: " + QuestionAnsweredCorrect + "/3";
+                correctAnswers.GetComponent<TextMeshProUGUI>().text = "Correct Answers: " + QuestionAnsweredCorrect + "/5";
                 //IF CurrentQuestionNumber == 3 Congratulate the player
-                if (QuestionAnsweredCorrect == 3)
+                if (QuestionAnsweredCorrect == 5)
                 {
                     isDone = true;
                     correctAnswers.GetComponent<TextMeshProUGUI>().text = "Run To The Finish Line BOBO!";
@@ -347,7 +360,7 @@ public class Stage2ScriptHandler : MonoBehaviour
 
     public int calculatePoints()
     {
-        expGained = timeConsumed / 3;
+        expGained = timeConsumed / 7;
         return 40 - expGained;
     }
 
@@ -359,19 +372,29 @@ public class Stage2ScriptHandler : MonoBehaviour
 
     public void addPlayerExp()
     {
-        GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerCurrentExp += calculatePoints();
+        if (calculatePoints() >= 0)
+            GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerCurrentExp += calculatePoints();
         GameObject.Find("Opening_Game_Script").GetComponent<PlayerExpCalculator>().UpdatePlayerLevel();
         // int points = int.Parse(calculatePoints().ToString());
-        GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerMoney += calculatePoints() * 5;
+        if ((calculatePoints() * 5) >= 0)
+            GameObject.Find("Opening_Game_Script").GetComponent<Database>().playerMoney += calculatePoints() * 5;
         SaveData.SaveDataProgress(Database.instance);
     }
 
     public void hideUI()
     {
+        int ppoints = 0;
+        int ccoins = 0;
+        if (calculatePoints() <= 0)
+            ppoints = 0;
+        if ((calculatePoints() * 5) <= 0)
+            ccoins = 0;
+        else
+            ccoins = (calculatePoints() * 5);
         playerUIDisplay.SetActive(false);
         Given_timer_AnswerCtr.SetActive(false);
         finishText.text = "Time Consumed: " + timeConsumed.ToString() +
-                          "\nExp. Gained: " + calculatePoints().ToString() +
-                          "\nCoins Earned: " + calculatePoints() * 5;
+                          "\nExp. Gained: " + ppoints.ToString() +
+                          "\nCoins Earned: " + ccoins.ToString();
     }
 }

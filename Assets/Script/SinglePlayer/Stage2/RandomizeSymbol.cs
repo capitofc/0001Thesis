@@ -21,7 +21,7 @@ public class RandomizeSymbol : MonoBehaviour
     {
         while (isasd)
         {
-            int _index = Random.Range(0, 4);
+            int _index = Random.Range(0, 5);
             for (int i = 0; i < transform.childCount; i++)
                 transform.GetChild(i).gameObject.SetActive(i == _index);
             yield return new WaitForSeconds(3f);
