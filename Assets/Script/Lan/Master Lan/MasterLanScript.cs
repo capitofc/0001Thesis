@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Mirror.Discovery;
+using UnityEngine.SceneManagement;
 
 public class MasterLanScript : NetworkManager
 {
@@ -19,6 +20,8 @@ public class MasterLanScript : NetworkManager
 
     [Header("Scene List")]
     [Scene]
+    public string MainMenu;
+    [Scene]
     public string lobbyLan;
     [Scene]
     public string stage1Scene;
@@ -26,8 +29,9 @@ public class MasterLanScript : NetworkManager
     public string stage2Scene;
     [Scene]
     public string stage3Scene;
-    
-    
+
+    public GameObject UIErrorDisconnect;
+
     public override void Start()
     {
         base.Start();
@@ -45,18 +49,21 @@ public class MasterLanScript : NetworkManager
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            GetComponent<NetworkDiscoveryHUD>().StartHostLan();
-            PlayerHostGo.SetActive(true);
-            UniversalUI.SetActive(true);
-        }
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            GetComponent<NetworkDiscoveryHUD>().JoinAsClient();
-            PlayerClientGo.SetActive(true);
-            UniversalUI.SetActive(true);
-        }
+
+    }
+
+    public void hostButton()
+    {
+        GetComponent<NetworkDiscoveryHUD>().StartHostLan();
+        PlayerHostGo.SetActive(true);
+        UniversalUI.SetActive(true);
+    }
+
+    public void joinButton()
+    {
+        GetComponent<NetworkDiscoveryHUD>().JoinAsClient();
+        PlayerClientGo.SetActive(true);
+        UniversalUI.SetActive(true);
     }
 
     public override void OnClientConnect(NetworkConnection conn)
@@ -68,6 +75,9 @@ public class MasterLanScript : NetworkManager
     {
         base.OnClientDisconnect(conn);
         //UI ABOUT DISCONNECTION
+        SceneManager.LoadScene(MainMenu);
+        UIErrorDisconnect.SetActive(true);
+
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
