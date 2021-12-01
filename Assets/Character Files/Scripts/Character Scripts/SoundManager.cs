@@ -9,6 +9,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] footsteps;
     public AudioClip jump;
     public AudioSource adSrc;
+    public AudioClip bump;
     int choice;
     // Start is called before the first frame update
     void Start()
@@ -21,8 +22,8 @@ public class SoundManager : MonoBehaviour
         switch (choice)
         {
             case 0: adSrc.PlayOneShot(footsteps[Random.Range(0, 1)]); break;
-            case 1: adSrc.PlayOneShot(jump); Debug.Log("jump"); break;
-            case 2: break;
+            case 1: adSrc.PlayOneShot(jump); break;
+            case 2: adSrc.PlayOneShot(bump); break;
 
         }
     }

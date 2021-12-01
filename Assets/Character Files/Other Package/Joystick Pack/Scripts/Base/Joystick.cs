@@ -33,7 +33,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     [SerializeField] private bool snapY = false;
 
     [SerializeField] protected RectTransform background = null;
-    [SerializeField] private RectTransform handle = null;
+    [SerializeField] protected RectTransform handle = null;
     private RectTransform baseRect = null;
 
     private Canvas canvas;
@@ -59,6 +59,23 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         handle.anchoredPosition = Vector2.zero;
     }
 
+    public void resetJoystick()
+    {
+        input = Vector2.zero;
+        if (handle != null)
+            resetPos();
+    }
+
+    void resetPos()
+    {
+        handle.anchoredPosition = Vector2.zero;
+    }
+
+    void OnDisable()
+    {
+        resetJoystick();
+    }
+
     protected virtual void Update()
     {
 
@@ -76,14 +93,14 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        OnDrag(eventData);
+        // OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         cam = null;
-        if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
-            cam = canvas.worldCamera;
+        // if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
+        //     cam = canvas.worldCamera;
 
         Vector2 position = RectTransformUtility.WorldToScreenPoint(cam, background.position);
         Vector2 radius = background.sizeDelta / 2;
@@ -152,16 +169,16 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         handle.anchoredPosition = Vector2.zero;
     }
 
-    protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)
-    {
-        Vector2 localPoint = Vector2.zero;
-        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(baseRect, screenPosition, cam, out localPoint))
-        {
-            Vector2 pivotOffset = baseRect.pivot * baseRect.sizeDelta;
-            return localPoint - (background.anchorMax * baseRect.sizeDelta) + pivotOffset;
-        }
-        return Vector2.zero;
-    }
+    // protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)
+    // {
+    //     Vector2 localPoint = Vector2.zero;
+    //     if (RectTransformUtility.ScreenPointToLocalPointInRectangle(baseRect, screenPosition, cam, out localPoint))
+    //     {
+    //         Vector2 pivotOffset = baseRect.pivot * baseRect.sizeDelta;
+    //         return localPoint - (background.anchorMax * baseRect.sizeDelta) + pivotOffset;
+    //     }
+    //     return Vector2.zero;
+    // }
 }
 
 public enum AxisOptions { Both, Horizontal, Vertical }

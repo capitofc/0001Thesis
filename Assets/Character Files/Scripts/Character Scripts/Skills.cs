@@ -7,10 +7,9 @@ public class Skills : MonoBehaviour
 {
     // Start is called before the first frame update
     public float skillDuration;
-    public float pushDistance;
     Rigidbody rb;
-    SimpleWalkerController simp;
-    [SerializeField] GameObject[] particles;
+    AdvancedWalkerController simp;
+    [SerializeField] public GameObject[] particles;
 
 
 
@@ -21,29 +20,16 @@ public class Skills : MonoBehaviour
         return skillDuration;
     }
 
-    public float pushDashDistance()
-    {
-        pushDistance = 50f;
-        return pushDistance;
-    }
-
     public float flashDuration()
     {
-        skillDuration = .5f;
+        skillDuration = 1.25f;
         return skillDuration;
-    }
-
-    public float flyDistance()
-    {
-        pushDistance = 500f;
-        return pushDistance;
     }
 
     public void slow(GameObject target)
     {
-        Debug.Log("slow");
-        Animator anim = target.GetComponentInChildren<Animator>();
-        simp = target.GetComponent<SimpleWalkerController>();
+        Animator anim = target.GetComponent<Animator>();
+        simp = target.GetComponent<AdvancedWalkerController>();
         SoundManager sound = target.GetComponent<SoundManager>();
         Skills skillFX = target.GetComponentInChildren<Skills>();
 
@@ -65,8 +51,25 @@ public class Skills : MonoBehaviour
 
     public void stun(GameObject target)
     {
-        Debug.Log("stun");
-        simp = target.GetComponent<SimpleWalkerController>();
+        simp = target.GetComponent<AdvancedWalkerController>();
+        TuxAnimations anim = target.GetComponent<TuxAnimations>();
+        SoundManager sound = target.GetComponent<SoundManager>();
+        Skills skillFX = target.GetComponentInChildren<Skills>();
+
+        sound.adSrc.pitch = .2f;
+        anim.playStun();
+        float speed = simp.getMovementSpeed();
+        skillFX.particles[2].SetActive(true);
+        simp.setMovementSpeed(0f);
+
+
+        StartCoroutine(skillTime(stunSlowDuration(), target, 1, 0));
+        StartCoroutine(disableParticle(2, 1f, skillFX));
+    }
+
+    public void ObsStun(GameObject target)
+    {
+        simp = target.GetComponent<AdvancedWalkerController>();
         TuxAnimations anim = target.GetComponent<TuxAnimations>();
         SoundManager sound = target.GetComponent<SoundManager>();
         Skills skillFX = target.GetComponentInChildren<Skills>();
@@ -98,14 +101,15 @@ public class Skills : MonoBehaviour
 
     public void flash(GameObject target)
     {
-        simp = target.GetComponent<SimpleWalkerController>();
-        Animator anim = target.GetComponentInChildren<Animator>();
+        simp = target.GetComponent<AdvancedWalkerController>();
+        Animator anim = target.GetComponent<Animator>();
         Skills skillFX = target.GetComponentInChildren<Skills>();
         float normSpeed = anim.speed;
         float speed = simp.getMovementSpeed();
         simp.setMovementSpeed(25f);
         anim.speed = 3.5f;
         skillFX.particles[3].SetActive(true);
+
 
         StartCoroutine(skillTime(flashDuration(), target, 4, normSpeed));
         StartCoroutine(disableParticle(3, flashDuration() + .3f, skillFX));
@@ -114,15 +118,25 @@ public class Skills : MonoBehaviour
     public void flyPlayer(GameObject target) //parameter must be the player
     {
         Mover mover = target.GetComponent<Mover>();
-        simp = target.GetComponent<SimpleWalkerController>();
+        TuxAnimations anim = target.GetComponent<TuxAnimations>();
+        simp = target.GetComponent<AdvancedWalkerController>();
         rb = target.GetComponent<Rigidbody>();
         Skills skillFX = target.GetComponentInChildren<Skills>();
 
-        simp.setJumpSpeed(25f);
+        if (simp.IsGrounded())
+        {
+            simp.setJumpSpeed(15f);
+            simp.jump();
+            skillFX.particles[1].SetActive(true);
+        }
+
+        simp.setJumpSpeed(15);
+        simp.jumpNow();
 
         skillFX.particles[1].SetActive(true);
+        anim.playFly();
 
-        StartCoroutine(skillTime(2f, target, 2, 0));
+        StartCoroutine(skillTime(0, target, 2, 0));
         StartCoroutine(disableParticle(1, 2.5f, skillFX));
     }
 
@@ -138,32 +152,32 @@ public class Skills : MonoBehaviour
 
         if (choice == 1)
         {
-            target.GetComponent<SimpleWalkerController>().setMovementSpeed(7f);
-            target.GetComponent<SimpleWalkerController>().setJumpSpeed(10f);
+            target.GetComponent<AdvancedWalkerController>().setMovementSpeed(7f);
+            target.GetComponent<AdvancedWalkerController>().setJumpSpeed(6f);
             target.GetComponent<SoundManager>().adSrc.pitch = 1f;
         }
 
 
         else if (choice == 2)
         {
-            //target.GetComponent<SimpleWalkerController>().setGravity(47f);
-            target.GetComponent<SimpleWalkerController>().setJumpSpeed(10f);
+            //target.GetComponent<AdvancedWalkerController>().setGravity(47f);
+            target.GetComponent<AdvancedWalkerController>().setJumpSpeed(6f);
         }
 
         else if (choice == 3)
         {
-            target.GetComponent<SimpleWalkerController>().setMovementSpeed(7f);
-            target.GetComponent<SimpleWalkerController>().setJumpSpeed(10f);
+            target.GetComponent<AdvancedWalkerController>().setMovementSpeed(7f);
+            target.GetComponent<AdvancedWalkerController>().setJumpSpeed(6f);
             target.GetComponent<SoundManager>().adSrc.pitch = 1f;
-            Animator anim = target.GetComponentInChildren<Animator>();
+            Animator anim = target.GetComponent<Animator>();
             anim.speed = animSpeed;
         }
 
         else if (choice == 4)
         {
-            target.GetComponent<SimpleWalkerController>().setMovementSpeed(7f);
-            target.GetComponent<SimpleWalkerController>().setJumpSpeed(10f);
-            Animator anim = target.GetComponentInChildren<Animator>();
+            target.GetComponent<AdvancedWalkerController>().setMovementSpeed(7f);
+            target.GetComponent<AdvancedWalkerController>().setJumpSpeed(6f);
+            Animator anim = target.GetComponent<Animator>();
             anim.speed = animSpeed;
         }
     }

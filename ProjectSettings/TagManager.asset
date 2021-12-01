@@ -3,7 +3,32 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Pink
+  - Zilch
+  - Green
+  - Trix
+  - Maze
+  - Blue
+  - Enemy
+  - UltiPoint
+  - SpeedUp
+  - CDReset
+  - Tramp
+  - Pipe
+  - Int
+  - Sub
+  - Mod
+  - Mul
+  - SpeedPowerUp
+  - PickUp
+  - Add
+  - Div
+  - Blackhole
+  - Platform
+  - sbTrix
+  - sbMaze
+  - sbZilch
   layers:
   - Default
   - TransparentFX
