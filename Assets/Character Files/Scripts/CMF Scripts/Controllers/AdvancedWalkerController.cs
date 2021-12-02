@@ -100,8 +100,9 @@ namespace CMF
             if (joystick == null)
             {
                 joystick = GameObject.Find("Joystick");
-                myJs = joystick.GetComponent<Joystick>();
             }
+
+            myJs = joystick.GetComponent<Joystick>();
         }
         //This function is called right after Awake(); It can be overridden by inheriting scripts;
         protected virtual void Setup()
